@@ -1,7 +1,7 @@
 const taskInput = document.getElementById("new-task");
-const addButton = document.getElementsByTagName("button")[0];
-const incompleteTaskHolder = document.getElementById("incompleteTasks");
-const completedTasksHolder = document.getElementById("completed-tasks");
+const addTaskButton = document.getElementsByTagName("button")[0];
+const incompleteTasksContainer = document.getElementById("incompleteTasks");
+const completeTasksContainer = document.getElementById("completed-tasks");
 
 const createNewTaskElement = function (taskString) {
   const listItem = document.createElement("li");
@@ -41,7 +41,7 @@ const addTask = function () {
   if (!taskInput.value) return;
   const listItem = createNewTaskElement(taskInput.value);
 
-  incompleteTaskHolder.appendChild(listItem);
+  incompleteTasksContainer.appendChild(listItem);
   bindTaskEvents(listItem, taskCompleted);
 
   taskInput.value = "";
@@ -55,15 +55,15 @@ const editTask = function () {
 
   const editInput = listItem.querySelector("input[type=text]");
   const label = listItem.querySelector("label");
-  const editBtn = listItem.querySelector(".edit");
-  const containsClass = listItem.classList.contains("editMode");
+  const editButton = listItem.querySelector(".edit");
+  const isEditMode = listItem.classList.contains("editMode");
 
-  if (containsClass) {
+  if (isEditMode) {
     label.innerText = editInput.value;
-    editBtn.innerText = "Edit";
+    editButton.innerText = "Edit";
   } else {
     editInput.value = label.innerText;
-    editBtn.innerText = "Save";
+    editButton.innerText = "Save";
   }
 
   listItem.classList.toggle("editMode");
@@ -82,7 +82,7 @@ const taskCompleted = function () {
   console.log("Complete Task...");
 
   const listItem = this.parentNode;
-  completedTasksHolder.appendChild(listItem);
+  completeTasksContainer.appendChild(listItem);
   bindTaskEvents(listItem, taskIncomplete);
 };
 
@@ -90,13 +90,13 @@ const taskIncomplete = function () {
   console.log("Incomplete Task...");
 
   const listItem = this.parentNode;
-  incompleteTaskHolder.appendChild(listItem);
+  incompleteTasksContainer.appendChild(listItem);
   bindTaskEvents(listItem, taskCompleted);
 };
 
-addButton.addEventListener("click", addTask);
+addTaskButton.addEventListener("click", addTask);
 
-const bindTaskEvents = function (taskListItem, checkBoxEventHandler) {
+const bindTaskEvents = function (taskListItem, onCheckboxChange) {
   console.log("bind list item events");
   const checkBox = taskListItem.querySelector("input[type=checkbox]");
   const editButton = taskListItem.querySelector("button.edit");
@@ -104,13 +104,13 @@ const bindTaskEvents = function (taskListItem, checkBoxEventHandler) {
 
   editButton.onclick = editTask;
   deleteButton.onclick = deleteTask;
-  checkBox.onchange = checkBoxEventHandler;
+  checkBox.onchange = onCheckboxChange;
 };
 
-for (let i = 0; i < incompleteTaskHolder.children.length; i++) {
-  bindTaskEvents(incompleteTaskHolder.children[i], taskCompleted);
+for (let i = 0; i < incompleteTasksContainer.children.length; i++) {
+  bindTaskEvents(incompleteTasksContainer.children[i], taskCompleted);
 }
 
-for (let i = 0; i < completedTasksHolder.children.length; i++) {
-  bindTaskEvents(completedTasksHolder.children[i], taskIncomplete);
+for (let i = 0; i < completeTasksContainer.children.length; i++) {
+  bindTaskEvents(completeTasksContainer.children[i], taskIncomplete);
 }
